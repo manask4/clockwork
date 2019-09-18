@@ -1,0 +1,35 @@
+#time-spent {
+  font-size: 5rem;
+}
+
+button {
+  padding: 10px 20px;
+  display: block;
+  margin: 10px;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: #0065FF;
+  border: 0;
+  outline: 0;
+  transition: 0.3s;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  box-shadow: 0px 2px 4px #2684FF;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+button.disabled {
+  background-color: #6B778C;
+}
+
+button.disabled:hover {
+  box-shadow: none;
+  cursor: not-allowed;
+}

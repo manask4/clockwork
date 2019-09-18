@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+// import logo from "./logo.svg";
+import Projects from "./components/Projects/projects";
+import Timer from "./components/Timer/timer";
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      projectSelected: false,
+    }
+    this.projectUpdated = this.projectUpdated.bind(this);
+  }
+
+  projectUpdated(projectName) {
+    this.setState({
+      projectSelected: projectName.length > 0,
+    })
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          <Projects updateProject={this.projectUpdated} />
+          <Timer projectIsSelected={this.state.projectSelected} />
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
