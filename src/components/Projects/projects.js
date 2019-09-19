@@ -7,8 +7,10 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      projects: ["FCC", "TEST1", "Symfony", "Drupal", "Laravel", "React", "Personal"],
+      projects: [],
       project: "",
+      pid: 0,
+      dialogOpen: false,
       search: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -21,24 +23,27 @@ class Projects extends React.Component {
     this.setState({
       project: searchFor,
       search: searchFor.length > 0,
+      pid: 0,
     });
-    this.props.updateProject(searchFor);
+    // this.props.updateProject(searchFor);
   }
 
   updateInput(e) {
+    const pid = e.target.getAttribute('data-pid');
     const projectName = e.target.innerText || e.target.textContent;
     this.setState({
       project: projectName,
-      search: false
+      search: false,
+      pid
     });
     this.props.updateProject(projectName);
   }
 
   toggleDropdown() {
     this.setState({
-      search: !this.state.search,
+      dialogOpen: !this.state.dialogOpen,
     });
-    if (!this.state.search) {
+    if (!this.state.dialogOpen) {
       document.querySelector('input').focus();
     }
   }
@@ -60,16 +65,15 @@ class Projects extends React.Component {
         </div>
         <div
           style={{
-            display: this.state.search ? "block" : "none",
-            position: "fixed"
+            display: this.state.dialogOpen ? "block" : "none",
           }}
           className="projects-dropdown"
         >
           <ul>
             {this.state.projects
-              .filter(project => project.indexOf(this.state.project) !== -1)
+              .filter(project => project.toLowerCase().indexOf(this.state.project.toLowerCase()) !== -1 || !this.state.dialogOpen)
               .map((item, index) => (
-                <li onClick={this.updateInput} key={index}>
+                <li onClick={this.updateInput} data-pid={index + 1} key={index}>
                   {item}
                 </li>
               ))}

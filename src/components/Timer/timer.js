@@ -20,36 +20,35 @@ class Timer extends React.Component {
 
   timerStart() {
     if (!this.intervalRunning && this.props.projectIsSelected) {
-      this.interval = setInterval(
-        () =>
-          this.setState(prevState => {
-            let currSeconds = prevState.seconds + 1;
-            let currMinutes = prevState.minutes;
-            let currHours = prevState.hours;
-            if (currSeconds > 60) {
-              currSeconds = 0;
-              currMinutes += 1;
-            }
-            if (currMinutes > 60) {
-              currMinutes = 0;
-              currHours += 1;
-            }
-
-            return {
-              hours: currHours,
-              minutes: currMinutes,
-              seconds: currSeconds
-            };
-          }),
-        1000
-      );
+      this.interval = setInterval(() => {
+        return this.setState(prevState => {
+          let currSeconds = prevState.seconds + 1;
+          let currMinutes = prevState.minutes;
+          let currHours = prevState.hours;
+          if (currSeconds > 60) {
+            currSeconds = 0;
+            currMinutes += 1;
+          }
+          if (currMinutes > 60) {
+            currMinutes = 0;
+            currHours += 1;
+          }
+          return {
+            hours: currHours,
+            minutes: currMinutes,
+            seconds: currSeconds
+          };
+        });
+      }, 1000);
       this.intervalRunning = true;
+      this.props.timerStarted(true);
     }
   }
 
   timerStop() {
     clearInterval(this.interval);
     this.intervalRunning = false;
+    this.props.timerStarted();
   }
 
   timerReset() {
@@ -60,6 +59,7 @@ class Timer extends React.Component {
     });
     clearInterval(this.interval);
     this.intervalRunning = false;
+    this.props.timerStarted();
   }
 
   render() {
@@ -70,10 +70,21 @@ class Timer extends React.Component {
           {this.state.hours}h {this.state.minutes}m {this.state.seconds}s
         </h1>
 
-        <div className="buttons">
-          <button className={this.props.projectIsSelected ? 'success' : 'disabled'} onClick={this.timerStart}>Start</button>
-          <button onClick={this.timerStop}>Stop</button>
-          <button onClick={this.timerReset}>Reset</button>
+        <div className="timer-buttons">
+          <button
+            className={
+              this.props.projectIsSelected ? "btn-success" : "btn-disabled"
+            }
+            onClick={this.timerStart}
+          >
+            Start
+          </button>
+          <button className="btn-stop" onClick={this.timerStop}>
+            Stop
+          </button>
+          <button className="btn-reset" onClick={this.timerReset}>
+            Reset
+          </button>
         </div>
       </div>
     );

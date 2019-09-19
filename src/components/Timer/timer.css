@@ -1,14 +1,18 @@
 #time-spent {
-  font-size: 5rem;
+  font-size: 6rem;
 }
 
-button {
+.timer-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.timer-buttons button {
   padding: 10px 20px;
   display: block;
   margin: 10px;
   font-size: 1.5rem;
   color: #fff;
-  background-color: #0065FF;
   border: 0;
   outline: 0;
   transition: 0.3s;
@@ -16,20 +20,27 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  box-shadow: 0px 2px 4px #2684FF;
+.timer-buttons button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 4px #121212;
 }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-}
-
-button.disabled {
+.timer-buttons .btn-disabled {
   background-color: #6B778C;
 }
 
-button.disabled:hover {
-  box-shadow: none;
+.timer-buttons .btn-disabled:hover {
   cursor: not-allowed;
+}
+
+.timer-buttons .btn-success {
+  background-color: #36B37E;
+}
+
+.timer-buttons .btn-stop {
+  background-color: #FFAB00;
+}
+
+.timer-buttons .btn-reset {
+  background-color: #FF5630;
 }
