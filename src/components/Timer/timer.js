@@ -1,5 +1,8 @@
 import React from "react";
+import Button from "../Common/Button/button";
 import "./timer.css";
+import { timerRunning } from "../../actions/index";
+import { connect } from "react-redux";
 
 class Timer extends React.Component {
   constructor(props) {
@@ -14,9 +17,28 @@ class Timer extends React.Component {
     this.timerStop = this.timerStop.bind(this);
     this.timerReset = this.timerReset.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleTimerButtonOperation = this.handleTimerButtonOperation.bind(
+      this
+    );
   }
 
   handleKeyPress(e) {}
+
+  handleTimerButtonOperation(e) {
+    const btnName = e.target.getAttribute("name");
+    switch (btnName) {
+      case "start":
+        this.timerStart();
+        this.props.startTimer();
+        break;
+      case "stop":
+        this.timerStop();
+        this.props.stopTimer();
+        break;
+      default:
+        this.timerReset();
+    }
+  }
 
   timerStart() {
     if (!this.intervalRunning && this.props.projectIsSelected) {
@@ -33,6 +55,7 @@ class Timer extends React.Component {
             currMinutes = 0;
             currHours += 1;
           }
+          document.title = `${currHours}h ${currMinutes}m ${currSeconds}s`;
           return {
             hours: currHours,
             minutes: currMinutes,
@@ -42,6 +65,20 @@ class Timer extends React.Component {
       }, 1000);
       this.intervalRunning = true;
       this.props.timerStarted(true);
+
+      let item = document.querySelector('#project-name').value;
+      let projects = localStorage.getItem('projects');
+      if (projects !== null) {
+        projects = JSON.parse(projects);
+        if (!projects.includes(item)) {
+          projects.push(item);
+          localStorage.setItem('projects', JSON.stringify(projects));
+        }
+      }
+      else {
+        projects = [item];
+        localStorage.setItem('projects', JSON.stringify(projects));
+      }
     }
   }
 
@@ -60,9 +97,11 @@ class Timer extends React.Component {
     clearInterval(this.interval);
     this.intervalRunning = false;
     this.props.timerStarted();
+    document.title = 'Clockwork | Home';
   }
 
   render() {
+    const timerButtons = ["START", "STOP", "RESET"];
     return (
       <div tabIndex="0" onKeyDown={this.handleKeyPress}>
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
@@ -71,24 +110,40 @@ class Timer extends React.Component {
         </h1>
 
         <div className="timer-buttons">
-          <button
-            className={
-              this.props.projectIsSelected ? "btn-success" : "btn-disabled"
-            }
-            onClick={this.timerStart}
-          >
-            Start
-          </button>
-          <button className="btn-stop" onClick={this.timerStop}>
-            Stop
-          </button>
-          <button className="btn-reset" onClick={this.timerReset}>
-            Reset
-          </button>
+          {timerButtons.map((name, index) => {
+            const uniqueClassName = `btn-${name.toLowerCase()}`;
+            return (
+              <Button
+                key={index}
+                handleClick={this.handleTimerButtonOperation}
+                classNames={`btn-timer ${
+                  this.props.projectIsSelected
+                    ? uniqueClassName
+                    : "btn-disabled"
+                }`}
+                name={name}
+              />
+            );
+          })}
         </div>
       </div>
     );
   }
 }
 
-export default Timer;
+const mapStateToProps = state => {
+  return { state };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    stopTimer: () => {
+      dispatch(timerRunning(false));
+    },
+    startTimer: () => {
+      dispatch(timerRunning(true));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Timer);

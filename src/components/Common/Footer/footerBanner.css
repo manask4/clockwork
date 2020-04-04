@@ -1,0 +1,22 @@
+.footer-banner {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFC400;
+  color: #212121;
+}
+
+.footer-banner small {
+  margin: 0;
+  padding: .5em;
+}
+
+.footer-banner-close {
+  /* border: 2px solid green; */
+  cursor: pointer;
+  background-color:#00875A;
+  color: #E3FCEF;
+}

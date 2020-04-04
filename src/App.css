@@ -4,19 +4,6 @@
   background-color: #282c34;
 }
 
-.App-brand {
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 10s linear;
-  /* height: 10vmin; */
-  pointer-events: none;
-}
-
 .App-box {
   display: flex;
   align-items: center;
