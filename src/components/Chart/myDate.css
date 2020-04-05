@@ -1,0 +1,11 @@
+.date--input {
+    padding: 10px;
+    font-size: 0.7em;
+    border-radius: 4px;
+    position: relative;
+    top: -1.5em;
+}
+
+.date--calendar {
+    margin-top: -2em;
+}

@@ -5,6 +5,7 @@ import FooterBanner from "./components/Common/Footer/footerBanner";
 import Projects from "./components/ProjectSelector/projectSelector";
 import Timer from "./components/Timer/timer";
 import Navbar from "./components/Common/Navbar/navbar";
+import Chart from "./components/Chart/chart";
 import "./App.css";
 
 class App extends React.Component {
@@ -16,6 +17,7 @@ class App extends React.Component {
       displayBanner: localStorage.getItem("banner_displayed") === null,
       dialogOpen: false,
       page: "Home",
+      projectChanged: false,
     };
     this.projectUpdated = this.projectUpdated.bind(this);
     this.updateTimerStarted = this.updateTimerStarted.bind(this);
@@ -50,10 +52,15 @@ class App extends React.Component {
     });
   }
 
-  projectUpdated(projectName) {
+  projectUpdated(projectName, selectType) {
     this.setState({
       projectSelected: projectName.length > 0,
     });
+    if (selectType === "changed") {
+      this.setState({
+        projectChanged: !this.state.projectChanged,
+      });
+    }
   }
 
   updateTimerStarted(started = false) {
@@ -65,7 +72,13 @@ class App extends React.Component {
   render() {
     let contentPage;
     switch (this.state.page) {
-      case "Home":
+      case "Activity":
+        contentPage = "Activity Page";
+        break;
+      case "Analysis":
+        contentPage = <Chart />;
+        break;
+      default:
         contentPage = (
           <React.Fragment>
             <Projects
@@ -73,18 +86,12 @@ class App extends React.Component {
               updateProject={this.projectUpdated}
             />
             <Timer
-              timerStarted={this.updateTimerStarted}
+              updateTimerStatus={this.updateTimerStarted}
               projectIsSelected={this.state.projectSelected}
+              projectChanged={this.state.projectChanged}
             />
           </React.Fragment>
         );
-        break;
-      case "Activity":
-        contentPage = "Activity Page";
-        break;
-      case "Analysis":
-        contentPage = "Analysis Page";
-        break;
     }
 
     return (

@@ -10,7 +10,7 @@ class Timer extends React.Component {
     this.state = {
       hours: 0,
       minutes: 0,
-      seconds: 0
+      seconds: 0,
     };
 
     this.timerStart = this.timerStart.bind(this);
@@ -43,7 +43,7 @@ class Timer extends React.Component {
   timerStart() {
     if (!this.intervalRunning && this.props.projectIsSelected) {
       this.interval = setInterval(() => {
-        return this.setState(prevState => {
+        return this.setState((prevState) => {
           let currSeconds = prevState.seconds + 1;
           let currMinutes = prevState.minutes;
           let currHours = prevState.hours;
@@ -59,45 +59,91 @@ class Timer extends React.Component {
           return {
             hours: currHours,
             minutes: currMinutes,
-            seconds: currSeconds
+            seconds: currSeconds,
           };
         });
       }, 1000);
       this.intervalRunning = true;
-      this.props.timerStarted(true);
+      this.props.updateTimerStatus(true);
 
-      let item = document.querySelector('#project-name').value;
-      let projects = localStorage.getItem('projects');
-      if (projects !== null) {
-        projects = JSON.parse(projects);
-        if (!projects.includes(item)) {
-          projects.push(item);
-          localStorage.setItem('projects', JSON.stringify(projects));
+      this.updateProjectData();
+    }
+  }
+
+  getCurrentDate() {
+    const date = new Date();
+    let year = date.getFullYear().toString();
+    let month = date.getMonth() + 1;
+    month = month.toString();
+    let dateNum = date.getDate().toString();
+
+    return year + month + dateNum;
+  }
+
+  updateWorkData() {
+    const item = document.querySelector("#project-name").value;
+    const workTime = this.convertTimeToSeconds();
+    const d = this.getCurrentDate();
+    let work = localStorage.getItem("work");
+    if (work !== null) {
+      work = JSON.parse(work);
+      if (!work.hasOwnProperty(d)) {
+        work[d] = {};
+        work[d][item] = [workTime];
+      } else {
+        if (work[d].hasOwnProperty(item)) {
+          work[d][item].push(workTime);
+        } else {
+          work[d][item] = [workTime];
         }
       }
-      else {
-        projects = [item];
-        localStorage.setItem('projects', JSON.stringify(projects));
-      }
+      localStorage.setItem("work", JSON.stringify(work));
+    } else {
+      work = {};
+      work[d] = {};
+      work[d][item] = [workTime];
+      localStorage.setItem("work", JSON.stringify(work));
     }
+  }
+
+  updateProjectData() {
+    let item = document.querySelector("#project-name").value;
+    let projects = localStorage.getItem("projects");
+    if (projects !== null) {
+      projects = JSON.parse(projects);
+      if (!projects.includes(item)) {
+        projects.push(item);
+        localStorage.setItem("projects", JSON.stringify(projects));
+      }
+    } else {
+      projects = [item];
+      localStorage.setItem("projects", JSON.stringify(projects));
+    }
+  }
+
+  convertTimeToSeconds() {
+    let hours = this.state.hours / 3600;
+    let minutes = this.state.minutes / 60;
+    return hours + minutes + this.state.seconds;
   }
 
   timerStop() {
     clearInterval(this.interval);
     this.intervalRunning = false;
-    this.props.timerStarted();
+    this.props.updateTimerStatus();
+    this.updateWorkData();
   }
 
   timerReset() {
     this.setState({
       hours: 0,
       minutes: 0,
-      seconds: 0
+      seconds: 0,
     });
     clearInterval(this.interval);
     this.intervalRunning = false;
-    this.props.timerStarted();
-    document.title = 'Clockwork | Home';
+    this.props.updateTimerStatus();
+    document.title = "Clockwork | Home";
   }
 
   render() {
@@ -112,15 +158,14 @@ class Timer extends React.Component {
         <div className="timer-buttons">
           {timerButtons.map((name, index) => {
             const uniqueClassName = `btn-${name.toLowerCase()}`;
+            const classNames = this.props.projectIsSelected
+              ? uniqueClassName
+              : "btn-disabled";
             return (
               <Button
                 key={index}
                 handleClick={this.handleTimerButtonOperation}
-                classNames={`btn-timer ${
-                  this.props.projectIsSelected
-                    ? uniqueClassName
-                    : "btn-disabled"
-                }`}
+                classNames={`btn-timer ${classNames}`}
                 name={name}
               />
             );
@@ -131,18 +176,18 @@ class Timer extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return { state };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     stopTimer: () => {
       dispatch(timerRunning(false));
     },
     startTimer: () => {
       dispatch(timerRunning(true));
-    }
+    },
   };
 };
 

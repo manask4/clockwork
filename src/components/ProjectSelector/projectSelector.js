@@ -54,7 +54,8 @@ class ProjectSelector extends React.Component {
       search: false,
       pid
     });
-    this.props.updateProject(projectName);
+    let selectType = this.state.project.length > 0 && this.state.project !== projectName ? 'changed' : 'init';
+    this.props.updateProject(projectName, selectType);
   }
 
   toggleDropdown(e) {
