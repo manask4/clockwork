@@ -33,7 +33,7 @@ class Chart extends React.Component {
       "#FF8042",
       "#ED553B",
     ];
-    const dataLength = num ? num : this.state.data.length;
+    const dataLength = num !== null ? num : this.state.data.length;
     const colors = randomColor({
       count: dataLength,
       luminosity: "bright",
